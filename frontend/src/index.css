@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#030308] text-[#f1f1f6] font-sans selection:bg-brand-purple selection:text-white;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(10, 10, 20, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Glassmorphism Styles */
+.glass-panel {
+  background: rgba(10, 10, 22, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(15, 15, 32, 0.6);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(139, 92, 246, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: #f1f1f6;
+  transition: all 0.2s ease-in-out;
+}
+
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(139, 92, 246, 0.5);
+  outline: none;
+  box-shadow: 0 0 15px 0 rgba(139, 92, 246, 0.2);
+}
+
+/* Gradients */
+.text-glow-blue {
+  text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+}
+
+.text-glow-purple {
+  text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+}
+
+.glow-card-cyan::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.4) 0%, rgba(3, 3, 8, 0) 60%);
+  z-index: -1;
+  border-radius: inherit;
+}
+
+.glow-card-purple::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(3, 3, 8, 0) 60%);
+  z-index: -1;
+  border-radius: inherit;
+}
+
+/* Scanning Overlay Animation for Login */
+@keyframes scan-animation {
+  0% { top: 0%; opacity: 0.8; }
+  50% { opacity: 0.3; }
+  100% { top: 100%; opacity: 0.8; }
+}
+
+.scanning-line {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #06b6d4, #10b981, #06b6d4, transparent);
+  box-shadow: 0 0 10px #06b6d4;
+  animation: scan-animation 2.5s infinite linear;
+}

@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # 1. PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: aetheros-db
+    environment:
+      POSTGRES_DB: aetheros
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret_password_123
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ../database/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ../database/seed.sql:/docker-entrypoint-initdb.d/2-seed.sql
+    networks:
+      - aetheros-net
+
+  # 2. Spring Boot Core API
+  springboot-app:
+    build:
+      context: ../backend-springboot
+      dockerfile: Dockerfile
+    container_name: aetheros-springboot
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/aetheros
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: secret_password_123
+    networks:
+      - aetheros-net
+
+  # 3. Python FastAPI AI Node
+  fastapi-app:
+    build:
+      context: ../backend-fastapi
+      dockerfile: Dockerfile
+    container_name: aetheros-fastapi
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    networks:
+      - aetheros-net
+
+  # 4. Frontend SPA Client
+  frontend-client:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: aetheros-frontend
+    networks:
+      - aetheros-net
+
+  # 5. Nginx Proxy Gateway
+  nginx-gateway:
+    image: nginx:alpine
+    container_name: aetheros-gateway
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - springboot-app
+      - fastapi-app
+      - frontend-client
+    networks:
+      - aetheros-net
+
+volumes:
+  pgdata:
+
+networks:
+  aetheros-net:
+    driver: bridge
